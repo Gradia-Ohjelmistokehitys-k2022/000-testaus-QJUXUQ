@@ -38,7 +38,7 @@ namespace BankTests
                 StringAssert.Contains(e.Message, BankAccount.DebitAmountLessThanZeroMessage);
                 return;
             }
-            Assert.Fail("The expection was not thrown.");
+            Assert.ThrowsException<System.ArgumentOutOfRangeException>(() => account.Debit(debitAmount));
         }
 
 
@@ -62,6 +62,18 @@ namespace BankTests
             }
             Assert.Fail("The expection was not thrown.");
             
+        }
+
+        [TestMethod]
+        public void Credit_IsWorking() 
+        {
+            double beginningBalance = 11.99;
+            double creditAmount = 20;
+            double expected =31.99;
+            BankAccount account = new BankAccount("Mr. Bryan Walton",beginningBalance);
+            account.Credit(creditAmount);
+            double actual = account.Balance;
+            Assert.AreEqual(expected, actual, 0.001);
         }
 
 
