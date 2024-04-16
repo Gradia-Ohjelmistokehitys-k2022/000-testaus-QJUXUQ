@@ -11,6 +11,9 @@ namespace TestingTodoListApp
 
         private readonly List<TodoTask> _tasks;
         private int _taskCounter = 0;
+        public const string TaskIsEmptyMessage = "Task is empty";
+        
+        
         public IEnumerable<TodoTask> All => _TodoItems; //https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.all?view=net-6.0
         public List<TodoTask> _TodoItems { get => _tasks; }
 
@@ -25,26 +28,51 @@ namespace TestingTodoListApp
         }
         public void AddItemToList(TodoTask item)
         {
-            _taskCounter++;
-            _tasks.Add(item with { Id = _taskCounter});
+            
+            if(string.IsNullOrWhiteSpace(item.TaskDescription)) 
+            {
+                throw new System.ArgumentNullException(item.TaskDescription,TaskIsEmptyMessage);
+            }
+            else
+            {
+                _taskCounter++;
+                _tasks.Add(item with { Id = _taskCounter });
+                
+            }
+            
+            
 
         }
 
-        public void RemoveItemFromList(TodoTask item)
+        public void RemoveItemFromList(int Id)
         {
-            if (_tasks.Contains(item))
+            
+            var itemToRemove = _tasks.SingleOrDefault(task=>task.Id==Id);
+            if (itemToRemove != null)
             {
-                _tasks.Remove(item with { Id = _taskCounter-- });
+
+                _tasks.Remove(itemToRemove);
+                _taskCounter--;
 
             }
 
         }
 
+
         public void CompleteItem(int id)
         {
-            // remove the item
-            var item = _tasks.First(x => x.Id == id);
-            RemoveItemFromList(item);
+            //remove the item
+           var item = _tasks.SingleOrDefault(x => x.Id == id);
+
+            //RemoveItemFromList(item.Id);
+            if (item != null)
+            {
+
+                RemoveItemFromList(item.Id);
+                item.IsCompleted = true;
+            }
+           
         }
+
     }
 }

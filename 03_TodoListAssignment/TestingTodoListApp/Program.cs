@@ -29,7 +29,22 @@ namespace TodoListNS
             {
                 Console.WriteLine(item);
             }
-
+            
+            
+            TodoList todoList1 = new TodoList();
+            todoList1.AddItemToList(new TodoTask("a"));
+            var list1 = todoList1.All;
+            var anotherList1 = todoList1._TodoItems;
+            foreach (var item in list1) 
+            {
+                Console.WriteLine(item);
+            }
+            foreach (var item in anotherList1) 
+            {
+                Console.WriteLine(item);
+            }
+            
+            
         }
 
     }
