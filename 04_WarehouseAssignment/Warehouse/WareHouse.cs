@@ -1,4 +1,5 @@
-﻿using Warehouse;
+﻿using System.ComponentModel.Design;
+using Warehouse;
 
 
 namespace WareHouse
@@ -22,13 +23,31 @@ namespace WareHouse
 
         public WareHouse()
         {
-
+            _stockOfItems= new();
         }
 
         public void AddToStocks(string itemName, int itemCount)
         {
-            Stock stock = new(itemName, itemCount);
-            _stockOfItems.Add(stock);
+            if (itemCount>0) 
+            {
+                Stock stockExisting = _stockOfItems.FirstOrDefault(item => item.ItemName == itemName);
+
+                if (stockExisting != null)
+                {
+                    stockExisting.Quantity += itemCount;
+                }
+                else
+                {
+                    Stock newStock=new Stock(itemName, itemCount);
+                    _stockOfItems.Add (newStock);
+
+                }
+
+            }else { throw new ArgumentOutOfRangeException(); }
+
+           
+
+            
         }
 
         public bool InStock(string itemName)
@@ -43,7 +62,15 @@ namespace WareHouse
             {
 
                 stock = _stockOfItems.FirstOrDefault(item => item.Quantity > 0);
-                stock.Quantity -= quantity;
+                if (stock.Quantity >= quantity)
+                {
+                    stock.Quantity -= quantity;
+                }
+                else
+                {
+                    throw new Exception("Oversold " + stock.ItemName);
+                }
+
             }
             else
             {
@@ -53,8 +80,15 @@ namespace WareHouse
 
         public int StockCount(string itemName)
         {
-            var matches = _stockOfItems.Where(item => item.ItemName == itemName);
-            return matches.Count();
+            Stock matching = _stockOfItems.FirstOrDefault(item=>item.ItemName==itemName);
+
+            if (matching != null) 
+            {
+                return matching.Quantity;
+            } else 
+            {
+                throw new Exception();
+            }
         }
 
     }
